@@ -10,6 +10,7 @@ import {
 import { Candidate } from 'src/candidates/entities/candidate.entity';
 import { ApplicationStatus } from './application-status.enum';
 import { Followup } from 'src/followups/entities/followup.entity';
+import { Company } from 'src/companies/entities/company.entity';
 @Entity()
 export class Application {
   @PrimaryGeneratedColumn()
@@ -36,4 +37,7 @@ export class Application {
 
   @OneToMany(() => Followup, (followup) => followup.application)
   followups!: Followup[];
+
+  @ManyToOne(() => Company, (company) => company.applications)
+  company!: Company;
 }

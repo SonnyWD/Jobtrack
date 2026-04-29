@@ -1,4 +1,5 @@
-import { PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
+import { Application } from 'src/applications/entities/application.entity';
+import { PrimaryGeneratedColumn, Column, Entity, OneToMany } from 'typeorm';
 
 @Entity()
 export class Company {
@@ -9,8 +10,11 @@ export class Company {
   name!: string;
 
   @Column({ nullable: true })
-  website!: string;
+  website?: string;
 
   @Column({ nullable: true })
-  location!: string;
+  location?: string;
+
+  @OneToMany(() => Application, (application) => application.company)
+  applications!: Application[];
 }

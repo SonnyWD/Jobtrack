@@ -9,7 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
+    /*TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
       port: 3306,
@@ -18,7 +18,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       database: 'test',
       entities: [],
       synchronize: true,
-    }),
+    }),*/
     CandidatesModule,
     CompaniesModule,
     ApplicationsModule,
