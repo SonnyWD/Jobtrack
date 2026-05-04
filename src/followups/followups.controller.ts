@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+} from '@nestjs/common';
 import { FollowupsService } from './followups.service';
 import { CreateFollowupDto } from './dto/create-followup.dto';
 import { UpdateFollowupDto } from './dto/update-followup.dto';
@@ -7,28 +16,61 @@ import { UpdateFollowupDto } from './dto/update-followup.dto';
 export class FollowupsController {
   constructor(private readonly followupsService: FollowupsService) {}
 
-  @Post()
-  create(@Body() createFollowupDto: CreateFollowupDto) {
-    return this.followupsService.create(createFollowupDto);
+  @Post('application/:applicationId')
+  createFollowup(
+    @Body() createFollowupDto: CreateFollowupDto,
+    @Req() req,
+    @Param('applicationId') applicationId: string,
+  ) {
+    const candidate = req.user;
+    return this.followupsService.createFollowup(
+      createFollowupDto,
+      +applicationId,
+      candidate,
+    );
   }
 
   @Get()
-  findAll() {
-    return this.followupsService.findAll();
+  findAllFollowups(@Req() req) {
+    const candidate = req.user;
+    return this.followupsService.findAllFollowups(candidate);
+  }
+
+  @Get('application/:applicationId')
+  findAllFollowupsById(
+    @Param('applicationId') applicationId: string,
+    @Req() req,
+  ) {
+    const candidate = req.user;
+    return this.followupsService.findAllFollowupsById(
+      +applicationId,
+      candidate,
+    );
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.followupsService.findOne(+id);
+  findOneFollowupById(@Param('id') followupId: string, @Req() req) {
+    const candidate = req.user;
+    return this.followupsService.findOneFollowup(+followupId, candidate);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFollowupDto: UpdateFollowupDto) {
-    return this.followupsService.update(+id, updateFollowupDto);
+  updateFollowup(
+    @Param('id') followupId: string,
+    @Body() updateFollowupDto: UpdateFollowupDto,
+    @Req() req,
+  ) {
+    const candidate = req.user;
+    return this.followupsService.updateFollowup(
+      +followupId,
+      updateFollowupDto,
+      candidate,
+    );
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.followupsService.remove(+id);
+  removeFollowup(@Param('id') followupId: string, @Req() req) {
+    const candidate = req.user;
+    return this.followupsService.removeFollowup(+followupId, candidate);
   }
 }

@@ -1,26 +1,118 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFollowupDto } from './dto/create-followup.dto';
 import { UpdateFollowupDto } from './dto/update-followup.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Application } from 'src/applications/entities/application.entity';
+import { Repository } from 'typeorm';
+import { Followup } from './entities/followup.entity';
+import { Candidate } from 'src/candidates/entities/candidate.entity';
 
 @Injectable()
 export class FollowupsService {
-  create(createFollowupDto: CreateFollowupDto) {
-    return 'This action adds a new followup';
+  constructor(
+    @InjectRepository(FollowupsService)
+    @InjectRepository(Application)
+    private readonly followupsRepository: Repository<Followup>,
+    private readonly applicationRepository: Repository<Application>,
+  ) {}
+
+  async createFollowup(
+    createFollowupDto: CreateFollowupDto,
+    applicationId: number,
+    candidate: Candidate,
+  ) {
+    const existingApplication = await this.applicationRepository.findOne({
+      where: {
+        id: applicationId,
+        candidate: { id: candidate.id },
+      },
+    });
+    if (!existingApplication) {
+      throw new NotFoundException(`La candidature n'existe pas.`);
+    }
+
+    const followup = this.followupsRepository.create({
+      ...createFollowupDto,
+      application: existingApplication,
+    });
+    return this.followupsRepository.save(followup);
   }
 
-  findAll() {
-    return `This action returns all followups`;
+  findAllFollowups(candidate: Candidate) {
+    const followups = this.followupsRepository.find({
+      where: {
+        application: {
+          candidate: { id: candidate.id },
+        },
+      },
+    });
+    return followups;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} followup`;
+  async findAllFollowupsById(applicationId: number, candidate: Candidate) {
+    const application = await this.applicationRepository.findOne({
+      where: {
+        id: applicationId,
+        candidate: { id: candidate.id },
+      },
+    });
+    if (!application) {
+      throw new NotFoundException(`La candidature n'existe pas.`);
+    }
+    const followups = await this.followupsRepository.find({
+      where: {
+        application: { id: application.id },
+      },
+    });
+    return followups;
   }
 
-  update(id: number, updateFollowupDto: UpdateFollowupDto) {
-    return `This action updates a #${id} followup`;
+  async findOneFollowup(followupId: number, candidate: Candidate) {
+    const followup = await this.followupsRepository.findOne({
+      where: {
+        id: followupId,
+        application: { candidate: { id: candidate.id } },
+      },
+    });
+    if (!followup) {
+      throw new NotFoundException(`Le rappel n'existe pas`);
+    }
+    return followup;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} followup`;
+  async updateFollowup(
+    followupId: number,
+    updateFollowupDto: UpdateFollowupDto,
+    candidate: Candidate,
+  ) {
+    const followup = await this.followupsRepository.findOne({
+      where: {
+        id: followupId,
+        application: {
+          candidate: { id: candidate.id },
+        },
+      },
+    });
+    if (!followup) {
+      throw new NotFoundException(`Le rappel n'existe pas.`);
+    }
+    Object.assign(followup, updateFollowupDto);
+    return this.followupsRepository.save(followup);
+  }
+
+  async removeFollowup(followupId: number, candidate: Candidate) {
+    const followup = await this.followupsRepository.findOne({
+      where: {
+        id: followupId,
+        application: {
+          candidate: { id: candidate.id },
+        },
+      },
+    });
+    if (!followup) {
+      throw new NotFoundException(`Le rappel n'existe pas.`);
+    }
+    await this.followupsRepository.remove(followup);
+    return { message: `Votre rappel a bien été supprimé.` };
   }
 }

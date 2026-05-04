@@ -6,56 +6,64 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
+import { Candidate } from 'src/candidates/entities/candidate.entity';
 
 @Controller('applications')
 export class ApplicationsController {
   constructor(private readonly applicationsService: ApplicationsService) {}
 
   @Post()
-  create(@Body() createApplicationDto: CreateApplicationDto) {
-    return this.applicationsService.create(createApplicationDto);
+  createApplication(
+    @Body() createApplicationDto: CreateApplicationDto,
+    @Req() req,
+  ) {
+    const candidate = req.user;
+    return this.applicationsService.createApplication(
+      createApplicationDto,
+      candidate,
+    );
   }
 
   @Get()
-  findAll() {
-    return this.applicationsService.findAll();
+  findAllApplications(@Req() req) {
+    const candidate = req.user;
+    return this.applicationsService.findAllApplications(candidate);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.applicationsService.findOne(+id);
+  findOneApplication(@Param('id') applicationId: string, @Req() req) {
+    const candidate = req.user;
+    return this.applicationsService.findOneApplication(
+      candidate,
+      +applicationId,
+    );
   }
 
   @Patch(':id')
-  update(
-    @Param('id') id: string,
+  updateApplication(
+    @Param('id') applicationId: string,
     @Body() updateApplicationDto: UpdateApplicationDto,
+    @Req() req,
   ) {
-    return this.applicationsService.update(+id, updateApplicationDto);
+    const candidate = req.user;
+    return this.applicationsService.updateApplication(
+      +applicationId,
+      updateApplicationDto,
+      candidate,
+    );
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.applicationsService.remove(+id);
+  removeApplication(@Param('id') applicationId: string, @Req() req) {
+    const candidate = req.user;
+    return this.applicationsService.removeApplication(
+      +applicationId,
+      candidate,
+    );
   }
 }
-
-/*@Controller('applications')
-export class ApplicationsController {
-  @Post()
-  createApplications(@Body() body: any) {
-    console.log(body);
-  }
-
-  @Get()
-  getApplications() {}
-
-  @Get('/:id')
-  getApplicationById(@Param('id') id: string) {
-    console.log(id);
-  }
-}*/

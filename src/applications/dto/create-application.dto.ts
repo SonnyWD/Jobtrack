@@ -10,7 +10,4 @@ export class CreateApplicationDto {
 
   @IsInt()
   companyId!: number;
-
-  @IsInt()
-  candidateId!: number;
 }
