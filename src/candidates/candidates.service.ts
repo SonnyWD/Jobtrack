@@ -1,26 +1,44 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCandidateDto } from './dto/create-candidate.dto';
-import { UpdateCandidateDto } from './dto/update-candidate.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Candidate } from './entities/candidate.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CreateCandidateWithHashDto } from './dto/create-candidate-with-hash.dto';
 
 @Injectable()
 export class CandidatesService {
-  create(createCandidateDto: CreateCandidateDto) {
-    return 'This action adds a new candidate';
+  constructor(
+    @InjectRepository(Candidate)
+    private readonly candidateRepository: Repository<Candidate>,
+  ) {}
+
+  createCandidate(createCandidateDto: CreateCandidateWithHashDto) {
+    const candidate = this.candidateRepository.create(createCandidateDto);
+    return this.candidateRepository.save(candidate);
+  }
+  async findByEmail(email: string) {
+    const existingCandidate = await this.candidateRepository.findOne({
+      where: {
+        email,
+      },
+    });
+    return existingCandidate;
   }
 
-  findAll() {
-    return `This action returns all candidates`;
+  async findOneCandidate(candidateId: number) {
+    const candidate = await this.candidateRepository.findOne({
+      where: {
+        id: candidateId,
+      },
+    });
+    if (!candidate) {
+      throw new NotFoundException(`Le candidat n'existe pas`);
+    }
+    return candidate;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} candidate`;
-  }
-
-  update(id: number, updateCandidateDto: UpdateCandidateDto) {
-    return `This action updates a #${id} candidate`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} candidate`;
+  async removeCandidate(candidateId: number) {
+    const candidate = await this.findOneCandidate(candidateId);
+    await this.candidateRepository.remove(candidate);
+    return { message: `Candidat supprimé avec succès.` };
   }
 }

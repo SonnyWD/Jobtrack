@@ -6,19 +6,22 @@ import { CompaniesModule } from './companies/companies.module';
 import { ApplicationsModule } from './applications/applications.module';
 import { FollowupsModule } from './followups/followups.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    /*TypeOrmModule.forRoot({
+    TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'root',
-      database: 'test',
-      entities: [],
+      password: 'rootroot',
+      database: 'Jobstrack',
+      autoLoadEntities: true,
       synchronize: true,
-    }),*/
+    }),
+
+    AuthModule,
     CandidatesModule,
     CompaniesModule,
     ApplicationsModule,

@@ -10,9 +10,9 @@ import { Candidate } from 'src/candidates/entities/candidate.entity';
 @Injectable()
 export class FollowupsService {
   constructor(
-    @InjectRepository(FollowupsService)
-    @InjectRepository(Application)
+    @InjectRepository(Followup)
     private readonly followupsRepository: Repository<Followup>,
+    @InjectRepository(Application)
     private readonly applicationRepository: Repository<Application>,
   ) {}
 

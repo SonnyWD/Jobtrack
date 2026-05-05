@@ -15,9 +15,9 @@ import { Company } from 'src/companies/entities/company.entity';
 export class ApplicationsService {
   constructor(
     @InjectRepository(Application)
+    private readonly applicationRepository: Repository<Application>,
     @InjectRepository(Company)
     private readonly companyRepository: Repository<Company>,
-    private readonly applicationRepository: Repository<Application>,
   ) {}
 
   async createApplication(
