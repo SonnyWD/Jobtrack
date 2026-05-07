@@ -13,13 +13,13 @@ export class Candidate {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 100 })
   name!: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', length: 191, unique: true })
   email!: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   passwordHash!: string;
 
   @CreateDateColumn()

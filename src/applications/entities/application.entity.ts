@@ -16,7 +16,7 @@ export class Application {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 150 })
   position!: string;
 
   @Column({
@@ -32,12 +32,16 @@ export class Application {
   @UpdateDateColumn()
   updated_at!: Date;
 
-  @ManyToOne(() => Candidate, (candidate) => candidate.applications)
+  @ManyToOne(() => Candidate, (candidate) => candidate.applications, {
+    onDelete: 'CASCADE',
+  })
   candidate!: Candidate;
 
   @OneToMany(() => Followup, (followup) => followup.application)
   followups!: Followup[];
 
-  @ManyToOne(() => Company, (company) => company.applications)
+  @ManyToOne(() => Company, (company) => company.applications, {
+    onDelete: 'RESTRICT',
+  })
   company!: Company;
 }

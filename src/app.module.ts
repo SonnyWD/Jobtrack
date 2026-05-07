@@ -18,7 +18,7 @@ import { AuthModule } from './auth/auth.module';
       password: 'rootroot',
       database: 'Jobstrack',
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
     }),
 
     AuthModule,

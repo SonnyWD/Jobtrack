@@ -7,12 +7,15 @@ import {
   Param,
   Delete,
   Req,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
-import { Candidate } from 'src/candidates/entities/candidate.entity';
+import { AuthGuard } from '@nestjs/passport';
+import { UseGuards } from '@nestjs/common';
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('applications')
 export class ApplicationsController {
   constructor(private readonly applicationsService: ApplicationsService) {}
@@ -22,48 +25,54 @@ export class ApplicationsController {
     @Body() createApplicationDto: CreateApplicationDto,
     @Req() req,
   ) {
-    const candidate = req.user;
+    const candidateId = req.user.sub;
     return this.applicationsService.createApplication(
       createApplicationDto,
-      candidate,
+      candidateId,
     );
   }
 
   @Get()
   findAllApplications(@Req() req) {
-    const candidate = req.user;
-    return this.applicationsService.findAllApplications(candidate);
+    const candidateId = req.user.sub;
+    return this.applicationsService.findAllApplications(candidateId);
   }
 
   @Get(':id')
-  findOneApplication(@Param('id') applicationId: string, @Req() req) {
-    const candidate = req.user;
+  findOneApplication(
+    @Param('id', ParseIntPipe) applicationId: number,
+    @Req() req,
+  ) {
+    const candidateId = req.user.sub;
     return this.applicationsService.findOneApplication(
-      candidate,
+      candidateId,
       +applicationId,
     );
   }
 
   @Patch(':id')
   updateApplication(
-    @Param('id') applicationId: string,
+    @Param('id', ParseIntPipe) applicationId: number,
     @Body() updateApplicationDto: UpdateApplicationDto,
     @Req() req,
   ) {
-    const candidate = req.user;
+    const candidateId = req.user.sub;
     return this.applicationsService.updateApplication(
-      +applicationId,
+      applicationId,
       updateApplicationDto,
-      candidate,
+      candidateId,
     );
   }
 
   @Delete(':id')
-  removeApplication(@Param('id') applicationId: string, @Req() req) {
-    const candidate = req.user;
+  removeApplication(
+    @Param('id', ParseIntPipe) applicationId: number,
+    @Req() req,
+  ) {
+    const candidateId = req.user.sub;
     return this.applicationsService.removeApplication(
-      +applicationId,
-      candidate,
+      applicationId,
+      candidateId,
     );
   }
 }

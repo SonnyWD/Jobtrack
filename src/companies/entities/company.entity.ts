@@ -6,14 +6,14 @@ export class Company {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 100 })
   name!: string;
 
-  @Column({ nullable: true })
-  website?: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  website!: string | null;
 
-  @Column({ nullable: true })
-  location?: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  location!: string | null;
 
   @OneToMany(() => Application, (application) => application.company)
   applications!: Application[];

@@ -33,6 +33,8 @@ export class Followup {
   @UpdateDateColumn()
   updated_at!: Date;
 
-  @ManyToOne(() => Application, (application) => application.followups)
+  @ManyToOne(() => Application, (application) => application.followups, {
+    onDelete: 'CASCADE',
+  })
   application!: Application;
 }

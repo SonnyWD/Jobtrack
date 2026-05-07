@@ -22,7 +22,7 @@ export class ApplicationsService {
 
   async createApplication(
     createApplicationDto: CreateApplicationDto,
-    candidate: Candidate,
+    candidateId: number,
   ) {
     const company = await this.companyRepository.findOneBy({
       id: createApplicationDto.companyId,
@@ -32,23 +32,23 @@ export class ApplicationsService {
     }
     const application = this.applicationRepository.create({
       ...createApplicationDto,
-      candidate: { id: candidate.id },
-      company: company,
+      candidate: { id: candidateId },
+      company: { id: company.id },
     });
     return this.applicationRepository.save(application);
   }
 
-  findAllApplications(candidate: Candidate) {
+  findAllApplications(candidateId: number) {
     const application = this.applicationRepository.find({
-      where: { candidate: { id: candidate.id } },
+      where: { candidate: { id: candidateId } },
     });
 
     return application;
   }
 
-  async findOneApplication(candidate: Candidate, applicationId: number) {
+  async findOneApplication(candidateId: number, applicationId: number) {
     const application = await this.applicationRepository.findOne({
-      where: { candidate: { id: candidate.id }, id: applicationId },
+      where: { candidate: { id: candidateId }, id: applicationId },
     });
 
     if (!application) {
@@ -61,11 +61,11 @@ export class ApplicationsService {
   async updateApplication(
     applicationId: number,
     updateApplicationDto: UpdateApplicationDto,
-    candidate: Candidate,
+    candidateId: number,
   ) {
     const application = await this.applicationRepository.findOneBy({
       id: applicationId,
-      candidate: { id: candidate.id },
+      candidate: { id: candidateId },
     });
 
     if (!application) {
@@ -77,10 +77,10 @@ export class ApplicationsService {
     return this.applicationRepository.save(application);
   }
 
-  async removeApplication(applicationId: number, candidate: Candidate) {
+  async removeApplication(applicationId: number, candidateId: number) {
     const application = await this.applicationRepository.findOneBy({
       id: applicationId,
-      candidate: { id: candidate.id },
+      candidate: { id: candidateId },
     });
 
     if (!application) {

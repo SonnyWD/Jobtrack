@@ -1,6 +1,32 @@
-{
-  "position": "Dev",
-  "status": "rejected",
-  "companyId": 1,
-  "candidateId": 2
-}
+[
+  {
+    "position": "Dev",
+    "status": "rejected",
+    "companyId": 1,
+    "candidateId": 2
+  },
+  {
+    "name": "Sonny",
+    "email": "sonny@test.com",
+    "password": "123456"
+  },
+  {
+    "email": "sonny@test.com",
+    "password": "123456"
+  },
+  {
+    "name": "Capgemini",
+    "website": "capgemini.fr",
+    "location": "12 rue des alizées 75000"
+  },
+  {
+    "position": "Développeur Front-end",
+    "status": "applied",
+    "companyId": 1
+  },
+  {
+    "type": "rejected",
+    "followup_date": "2026-05-10T14:00:00.000Z",
+    "note": "Rapeller le secrétariat"
+  }
+]
