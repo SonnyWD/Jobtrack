@@ -31,8 +31,11 @@ export class AuthService {
     const newCandidate = { ...withoutPassword, passwordHash };
     const createCandidate =
       await this.candidatesService.createCandidate(newCandidate);
+
+    const { passwordHash: _passwordHash, ...candidateWithoutPassword } =
+      createCandidate;
     // retourner le candidat
-    return createCandidate;
+    return candidateWithoutPassword;
   }
 
   async login(loginDto: LoginAuthDto) {

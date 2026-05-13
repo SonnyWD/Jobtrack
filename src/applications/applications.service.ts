@@ -73,7 +73,9 @@ export class ApplicationsService {
     }
 
     Object.assign(application, updateApplicationDto);
-
+    if (Object.keys(updateApplicationDto).length === 0) {
+      throw new BadRequestException(`Aucune donnée à modifier.`);
+    }
     return this.applicationRepository.save(application);
   }
 
